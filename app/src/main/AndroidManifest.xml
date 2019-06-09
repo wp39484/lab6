@@ -24,7 +24,9 @@
         <activity android:name="com.example.lab6.inRow"
             android:label=""
             />
-
+        <activity android:name="com.example.lab6.TicTacToe"
+            android:label=""
+            />
         <service
             android:name="com.example.lab6.HttpService"
             android:enabled="true"

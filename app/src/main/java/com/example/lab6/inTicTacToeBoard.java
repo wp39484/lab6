@@ -9,10 +9,6 @@ import android.widget.LinearLayout;
 
 import pl.antons.rsatest.R;
 
-/**
- * Created by Anton on 09.05.2016.
- * Adapter for GridView - implement gameplay of signle game
- */
 public class inTicTacToeBoard extends BaseAdapter {
     private Context context;
     private int player; //Current player (for move)
@@ -39,16 +35,6 @@ public class inTicTacToeBoard extends BaseAdapter {
     //Method make move
     private boolean move(int col, int player)
     {
-        int row = 0;
-        try {
-            //when fild is taken, go upstairs
-            while (board[row][col] != 0)
-                row++;
-            board[row][col]=player+1;
-        }catch(Exception ex){
-            /*if all cols are fils*/
-            return false;
-        }
         return true;
     }
 
@@ -104,55 +90,7 @@ public class inTicTacToeBoard extends BaseAdapter {
 
     //Method to check game state, if anybody wins, return which player win (or 0)
     public int checkWin(){
-        int inRow = 0;
-
-        //Check rows
-        for(int row=0; row<2; row++, inRow=0)
-            for(int col=0;col<2;col++)
-                if(board[row][col]==board[row][col+1]) {
-                    inRow++;
-                    if(inRow==2 && board[row][col]!=0)
-                        return board[row][col];
-                }else
-                    inRow=0;
-
-        //check cols
-        for(int col=0;col<2;col++, inRow=0)
-            for(int row=0;row<2;row++)
-                if(board[row][col]==board[row+1][col]){
-                    inRow++;
-                    if(inRow==2 && board[row][col]!=0)
-                        return board[row][col];
-                }else
-                    inRow=0;
-
-
-        //Chceck rising horizontal
-        for(int posx=3; posx<2;posx++)
-            for(int posy=0;posy<2;posy++) {
-                inRow = 0;
-                for (int x=posx, y=posy; x >0 && y < 2; x--, y++)
-                    if (board[x][y] == board[x - 1][y + 1]) {
-                        inRow++;
-                        if (inRow == 2 && board[x][y] != 0)
-                            return board[x][y];
-                    } else
-                        inRow = 0;
-            }
-
-        //Chceck falling horizontal
-        for(int posx=0; posx<2;posx++)
-            for(int posy=0;posy<2;posy++) {
-                inRow = 0;
-                for (int x=posx, y=posy; x < 2 && y < 2; x++, y++)
-                    if (board[x][y] == board[x + 1][y + 1]) {
-                        inRow++;
-                        if (inRow == 2 && board[x][y] != 0)
-                            return board[x][y];
-                    } else
-                        inRow = 0;
-            }
-        return 0;
+      return 1;
     }
 
 }
