@@ -15,6 +15,7 @@ public class HttpService extends IntentService {
     //Constant variables as Flags
     public static final int GAMES_LIST = 1;
     public static final int IN_ROW = 2;
+    public static final int IN_TIC = 5;
     public static final int REFRESH = 3;
     public static final int GAME_INFO = 4;
     public static final String URL = "URL";

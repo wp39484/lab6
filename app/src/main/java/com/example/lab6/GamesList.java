@@ -73,6 +73,7 @@ public class GamesList extends AppCompatActivity {
                     intencja.putExtra(HttpService.URL, HttpService.LINES+game_id);
                 }else{
                     //TODO - geting ticTacToe games list
+                    intencja.putExtra(HttpService.URL, HttpService.XO+game_id);
                 }
                 //Set data - method of request
                 intencja.putExtra(HttpService.METHOD, HttpService.GET);
@@ -99,6 +100,10 @@ public class GamesList extends AppCompatActivity {
                         break;
                     default:
                         //TODO - when gamer choose TicTacToe Game
+                        intencja = new Intent(getApplicationContext(), TicTacToe.class);
+                        intencja.putExtra(TicTacToe.STATUS, TicTacToe.NEW_GAME);
+                        //as new game there is no previous moves
+                        intencja.putExtra(TicTacToe.MOVES, "");
                         break;
                 }
                 startActivity(intencja);
@@ -132,6 +137,7 @@ public class GamesList extends AppCompatActivity {
             intencja.putExtra(HttpService.URL, HttpService.LINES);
         }else{
             //TODO - geting ticTacToe games list
+            intencja.putExtra(HttpService.URL, HttpService.XO);
         }
         //Set data - method of request
         intencja.putExtra(HttpService.METHOD, HttpService.GET);
@@ -223,6 +229,38 @@ public class GamesList extends AppCompatActivity {
                 }
             }else if(game==R.id.ticTac){
                 //TODO - start chosen game for TicTacToe
+                Intent intencja = new Intent(getApplicationContext(), TicTacToe.class);
+
+                try {
+                    //Parse server response
+                    JSONObject response = new JSONObject(data.getStringExtra(HttpService.RESPONSE));
+
+                    //Set Game number
+                    intencja.putExtra(TicTacToe.GAME_ID, response.getInt("id"));
+
+                    if (response.getInt("status") == 0 && response.getInt("player1") == 2) {
+                        //connect to new game
+                        intencja.putExtra(TicTacToe.STATUS, TicTacToe.YOUR_TURN);
+                    } else if (response.getInt("status") == 1 && response.getInt("player1") == 1) {
+                        //time to player1 move
+                        intencja.putExtra(TicTacToe.STATUS, TicTacToe.YOUR_TURN);
+                    } else if (response.getInt("status") == 2 && response.getInt("player1") == 2) {
+                        //time to player2 move
+                        intencja.putExtra(TicTacToe.STATUS, TicTacToe.YOUR_TURN);
+                    } else
+                        intencja.putExtra(TicTacToe.STATUS, TicTacToe.WAIT);
+
+                    //set player number
+                    intencja.putExtra(TicTacToe.PLAYER, response.getInt("player1"));
+                    //set previous moves
+                    intencja.putExtra(TicTacToe.MOVES, response.getString("moves"));
+                    //start game
+                    startActivity(intencja);
+
+                } catch (Exception ex) {
+                    //For JSON Object
+                    ex.printStackTrace();
+                }
             }
         }
     }
