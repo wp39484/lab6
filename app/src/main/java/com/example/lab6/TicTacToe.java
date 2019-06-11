@@ -18,7 +18,6 @@ import org.json.JSONObject;
 import pl.antons.rsatest.R;
 
 public class TicTacToe extends AppCompatActivity {
-
     //Constant variables for communicate whit other componets
     public static final String STATUS = "Status";
     public static final String MOVES = "Moves";
@@ -42,6 +41,7 @@ public class TicTacToe extends AppCompatActivity {
     //player number
     private int player;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,36 +58,33 @@ public class TicTacToe extends AppCompatActivity {
 
         //Seting game board as adapter of gridView
         GridView gv = (GridView) findViewById(R.id.gridView);
-        //in inRowBoard adapter constructor we put History of Moves as initialization
         moves = getIntent().getStringExtra(TicTacToe.MOVES);
         gv.setAdapter(new inTicTacToeBoard(this,moves));
         //Listner for clicking on element
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                //You can move only if Your turn (not Waiting Status)
-                if(status!=TicTacToe.WAIT)
-                {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (status != TicTacToe.WAIT) {
                     //User cannot move
                     status = TicTacToe.WAIT;
                     //Show hint about sending move
                     hints(TicTacToe.CONNECTION);
 
-                    //Getting game (inRowBoard Adapter)
+                    //Getting game (ticTacToe Adapter)
                     GridView gv = (GridView) findViewById(R.id.gridView);
-                    inTicTacToeBoard game = (inTicTacToeBoard)gv.getAdapter();
+                    inTicTacToeBoard game = (inTicTacToeBoard) gv.getAdapter();
                     //Make Move
-                    if(game.add(arg3)!=null)
+                    if (game.add(position) != null)
                         gv.setAdapter(game);
                     else
                         hints(TicTacToe.ERROR);
-
+//                        System.out.print("nie działam :( ");
                     //Creating intent for custom Service - sending Move to server
                     Intent intencja = new Intent(
                             getApplicationContext(),
                             HttpService.class);
                     //Creating PendingIntent - for response
-                    PendingIntent pendingResult = createPendingResult(HttpService.IN_TIC, new Intent(),0);
+                    PendingIntent pendingResult = createPendingResult(HttpService.IN_ROW, new Intent(),0);
 
                     if(game_id == TicTacToe.NEW_GAME)
                     {
@@ -105,7 +102,7 @@ public class TicTacToe extends AppCompatActivity {
                     }
 
                     //Set data - parameters
-                    intencja.putExtra(HttpService.PARAMS, "moves=" + moves + arg3 );
+                    intencja.putExtra(HttpService.PARAMS, "moves=" + moves + id );
                     //Set data - intent for result
                     intencja.putExtra(HttpService.RETURN, pendingResult);
                     //Start unBound Service in another Thread
@@ -114,13 +111,12 @@ public class TicTacToe extends AppCompatActivity {
             }
         });
     }
-
     //When Service return answer from server
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         //Result moves
-        if(requestCode==HttpService.IN_TIC)
+        if(requestCode==HttpService.IN_ROW)
         {
             try {
                 JSONObject response = new JSONObject(data.getStringExtra(HttpService.RESPONSE));
@@ -178,8 +174,10 @@ public class TicTacToe extends AppCompatActivity {
                 gv.setAdapter(game);
 
                 //check whose turn
-                if(response.getInt("status")==player){
-                    if(game.checkWin()==player) {
+                int gameStatus = response.getInt("status");
+                if(gameStatus==player || gameStatus == 3){
+                    int winStatus = game.checkWin();
+                    if(winStatus==player) {
                         hints(TicTacToe.WIN);
                     }else if(game.checkWin()!=0){
                         hints(TicTacToe.LOSE);
@@ -202,7 +200,7 @@ public class TicTacToe extends AppCompatActivity {
 
     //Set status into TextView (Hint) from String Resource
     private void hints(int status){
-        TextView hint = (TextView)findViewById(R.id.inRowHint);
+        TextView hint = (TextView)findViewById(R.id.ticTacHint);
         switch(status){
             case TicTacToe.YOUR_TURN:
                 hint.setText(getString(R.string.your_turn));
