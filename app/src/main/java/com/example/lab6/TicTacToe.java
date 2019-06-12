@@ -78,7 +78,6 @@ public class TicTacToe extends AppCompatActivity {
                         gv.setAdapter(game);
                     else
                         hints(TicTacToe.ERROR);
-//                        System.out.print("nie działam :( ");
                     //Creating intent for custom Service - sending Move to server
                     Intent intencja = new Intent(
                             getApplicationContext(),

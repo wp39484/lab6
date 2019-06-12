@@ -81,17 +81,14 @@ public class inTicTacToeBoard extends BaseAdapter {
         int row = position / 3;
 
         //Set appropriate image
-        switch (board[row][col]) {
+        switch (board[row][col]){
             case 0:
                 iv.setImageResource(R.drawable.circle);
                 break;
             case 1:
-                iv.setImageResource(R.drawable.circle1);
-                break;
-            case 2:
                 iv.setImageResource(R.drawable.player1);
                 break;
-            case 3:
+            case 2:
                 iv.setImageResource(R.drawable.player2);
                 break;
         }
